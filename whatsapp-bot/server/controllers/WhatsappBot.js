@@ -22,7 +22,6 @@ const customsearch = google.customsearch('v1');
  */
 class WhatsappBot {
 	
-	
   /**
    * @memberof WhatsappBot
    * @param {object} req - Request sent to the route
@@ -33,25 +32,44 @@ class WhatsappBot {
 	static async serviceRoute(req, res, next) {		
 			
 		const twiml = new MessagingResponse();
-		const typed = req.body.Body.toLowerCase();
+		const typed = req.body.Body.toLowerCase();		
+		
+		const posSpace = typed.indexOf(" ");
+		const firstPiece = typed.substring(0,posSpace + 1);
+		const secondPiece = typed.substring(posSpace + 1,typed.length);		
 		
 		try {
 			
-			if (typed.startsWith('price')) {			
+			if (typed.startsWith('search')) {	
+
+				const q = secondPiece;						
+				const options = { cx, q, auth: googleApiKey };
+				const result = await customsearch.cse.list(options);				
+				for (var i = 0; i < result.data.items.length; i++) {
+					var r = result.data.items[i];
+					const searchData = r.snippet + "\n" + r.link + "\n\n";
+					twiml.message(`${searchData}`)
+				}
+				res.set('Content-Type', 'text/xml');				
+				return res.status(200).send(twiml.toString());
+			
+			} else if (typed.startsWith('price')) {			
 	
-				const arr = typed.split(" ");
-				const symbol = arr[1];						
-				//var yahooStockPrices = require('yahoo-stock-prices');
-				
+				const symbol = secondPiece;
 				yahooStockPrices.getCurrentPrice(symbol, function(err, price){						
-					twiml.message(`The latest action stock price for '${symbol}' é US$ ${price}. More information at https://github.com/ehpessoa`);	
+					twiml.message(`The latest action stock price for '${symbol}' is US$ ${price}.`);	
 					res.set('Content-Type', 'text/xml');
 					return res.status(200).send(twiml.toString());
 				  });		
 				
 			} else {
 				
-				twiml.message(`Invalid option! You typed '${typed}'. Please, type: 'price [ticker]' and get the latest action stock price. More information at https://github.com/ehpessoa`);	
+				const result = "Invalid option!!!" +
+									"You should type the following options:\n" +
+									"- price [which stock ticker symbol of company]\n" + 
+									"- search [which word you would like to search]\n" +
+									"More information at https://github.com/ehpessoa";
+				twiml.message(`${result}`);	
 				res.set('Content-Type', 'text/xml');
 				return res.status(200).send(twiml.toString());
 
