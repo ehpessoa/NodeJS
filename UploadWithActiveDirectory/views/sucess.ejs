@@ -5,7 +5,7 @@
 
   <meta charset="utf-8">
 
-  <title>Error</title>
+  <title>Success</title>
 
   <link rel='stylesheet' href='http://codepen.io/assets/libs/fullpage/jquery-ui.css'>
   <link rel="stylesheet" href="style.css" media="screen" type="text/css" />
@@ -15,15 +15,14 @@
 
   <div class="login-card">
 	<img width="275px" src="/ehpessoa.png" />
-	<h3>Ops! Ocorreu um erro :-(</h3>
-	Verifique se o seu usu&aacute;rio e senha est&atilde;o corretos e tente novamente.
-	<br><br>
+	<br><br><center>O upload foi realizado! Utilize o link abaixo no seu relat&oacute;rio:</center><br><br>
+	<a href="<%= status%>" target="_blank"><%= status%></a><br><br>
   <div class="login-help">
-   <a href="/">voltar para tela inicial</a>
+    <a href="/">voltar para tela inicial</a>
   </div>
 </div>
 
-  <script src='http://codepen.io/assets/libs/fullpage/jquery_and_jqueryui.js'></script>
+<script src='http://codepen.io/assets/libs/fullpage/jquery_and_jqueryui.js'></script>
 
 </body>
 
